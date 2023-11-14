@@ -15,28 +15,45 @@ namespace RPBPacketBase
             return buffer.Data;
         }
 
-        public virtual void Serialize(ByteBuffer buffer) { }
+        public virtual void Serialize(ByteBuffer buffer)
+        {
+        }
 
-        public virtual T Deserialize<T>(ByteBuffer buffer) where T : class
+        public virtual T Deserialize<T>(ByteBuffer buffer) where T : RPBPacket
         {
             return default;
         }
+
         public virtual int GetSize()
         {
             return 0;
         }
-
     }
 
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public class Packet : Attribute
+
+    public abstract class RPBPacketData
+    {
+        public virtual void Serialize(ByteBuffer buffer) {}
+        public virtual int GetSize()
+        {
+            return 0;
+        }
+    }
+    [AttributeUsage(AttributeTargets.Class)]
+    public abstract class BasePacketAttribute : Attribute
     {
         public readonly byte Category;
         public readonly byte Protocol;
-        public Packet(byte category, byte protocol)
+
+        protected BasePacketAttribute(byte category, byte protocol)
         {
             Category = category;
             Protocol = protocol;
         }
+    }
+
+    public abstract class ErrorPacket : RPBPacket
+    {
+        public int ErrorCode;
     }
 }
